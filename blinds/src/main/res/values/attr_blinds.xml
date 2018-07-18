@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="BlindsLayout">
+        <attr format="dimension" name="blindsExtraSpace"/>
+        <attr format="integer" name="blindsMaxCount"/>
+        <attr format="fraction" name="blindsFraction"/>
+        <attr format="boolean" name="blindsFold"/>
+    </declare-styleable>
+</resources>

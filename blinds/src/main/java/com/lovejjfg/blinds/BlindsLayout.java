@@ -1,7 +1,9 @@
 package com.lovejjfg.blinds;
 
+import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.support.v4.view.animation.FastOutLinearInInterpolator;
 import android.util.AttributeSet;
 import android.view.View;
@@ -13,10 +15,13 @@ import android.view.ViewGroup;
  */
 public class BlindsLayout extends ViewGroup {
 
-    private int mTotalLength;
     private int maxCount = 3;
-    private int blindsSize = 60;
+    private float fraction = 0.6F;
     private ValueAnimator layoutChangeAnimator;
+    private boolean fold = true;
+    private int extraSpace = 0;
+    private float animatedFraction = 1.0f;
+    private static final int ANIMATION_DURATION = 300;
 
     public BlindsLayout(Context context) {
         this(context, null);
@@ -26,17 +31,19 @@ public class BlindsLayout extends ViewGroup {
         this(context, attrs, -1);
     }
 
-    private boolean expand = true;
-    private int extraSpace = 0;
-    private float animatedFraction = 1.0f;
-
     public BlindsLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setChildrenDrawingOrderEnabled(true);
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.BlindsLayout);
+        fraction = a.getFraction(R.styleable.BlindsLayout_blindsFraction, 1, 1, fraction);
+        extraSpace = a.getDimensionPixelSize(R.styleable.BlindsLayout_blindsExtraSpace, extraSpace);
+        maxCount = a.getInt(R.styleable.BlindsLayout_blindsMaxCount, maxCount);
+        fold = a.getBoolean(R.styleable.BlindsLayout_blindsFold, fold);
+        a.recycle();
 
         layoutChangeAnimator = ValueAnimator
             .ofFloat(0f, 1.0f)
-            .setDuration(300);
+            .setDuration(ANIMATION_DURATION);
         layoutChangeAnimator.setInterpolator(new FastOutLinearInInterpolator());
         layoutChangeAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
 
@@ -46,15 +53,52 @@ public class BlindsLayout extends ViewGroup {
                 requestLayout();
             }
         });
+    }
 
-        setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                expand = !expand;
-                layoutChangeAnimator.cancel();
-                layoutChangeAnimator.start();
-            }
-        });
+    public void toggle() {
+        fold = !fold;
+        layoutChangeAnimator.cancel();
+        layoutChangeAnimator.start();
+    }
+
+    public void setMaxCount(int maxCount) {
+        if (this.maxCount != maxCount) {
+            this.maxCount = maxCount;
+            requestLayout();
+        }
+    }
+
+    public void setFraction(float fraction) {
+        if (this.fraction != fraction) {
+            this.fraction = fraction;
+            requestLayout();
+        }
+    }
+
+    public void setFold(boolean fold) {
+        if (this.fold != fold) {
+            this.fold = fold;
+            requestLayout();
+        }
+    }
+
+    public void setExtraSpace(int extraSpace) {
+        if (this.extraSpace != extraSpace) {
+            this.extraSpace = extraSpace;
+            requestLayout();
+        }
+    }
+
+    public void setAnimationDuration(long duration) {
+        if (layoutChangeAnimator != null) {
+            layoutChangeAnimator.setDuration(duration);
+        }
+    }
+
+    public void setInterpolator(TimeInterpolator interpolator) {
+        if (layoutChangeAnimator != null) {
+            layoutChangeAnimator.setInterpolator(interpolator);
+        }
     }
 
     @Override
@@ -62,17 +106,13 @@ public class BlindsLayout extends ViewGroup {
         if (getChildCount() >= maxCount) {
             return;
         }
+        if (child.getVisibility() != VISIBLE) {
+            return;
+        }
         super.addView(child, index, params);
         if (getChildCount() == maxCount) {
-            expand = false;
             layoutChangeAnimator.start();
         }
-    }
-
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        performClick();
     }
 
     @Override
@@ -82,14 +122,10 @@ public class BlindsLayout extends ViewGroup {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        System.out.println("on measure..");
         int widthSize = getPaddingLeft() + getPaddingRight();
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
         int maxWidth = 0;
-        if (widthMode == MeasureSpec.AT_MOST) {
-            maxWidth = 0;
-        }
-        if (widthMode == MeasureSpec.UNSPECIFIED) {
+        if (widthMode == MeasureSpec.AT_MOST || widthMode == MeasureSpec.UNSPECIFIED) {
             maxWidth = 0;
         }
         if (widthMode == MeasureSpec.EXACTLY) {
@@ -97,7 +133,6 @@ public class BlindsLayout extends ViewGroup {
         }
 
         int heightSize = getPaddingBottom() + getPaddingBottom();
-        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
         int childCount = getChildCount();
         for (int i = 0; i < childCount; i++) {
             View child = getChildAt(i);
@@ -116,26 +151,22 @@ public class BlindsLayout extends ViewGroup {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        layoutChildren(l, t, r, b);
+        layoutChildren(l, r);
     }
 
-    void layoutChildren(int left, int top, int right, int bottom) {
+    void layoutChildren(int left, int right) {
         final int count = getChildCount();
-
-        final int parentLeft = getPaddingLeft();//getPaddingLeftWithForeground();
-        final int parentRight = right - left - getPaddingRight(); //- getPaddingRightWithForeground();
-
-        final int parentTop = getPaddingTop();// getPaddingTopWithForeground();
+        final int parentRight = right - left - getPaddingRight();
+        final int parentTop = getPaddingTop();
         for (int i = count - 1; i >= 0; i--) {
             final View child = getChildAt(i);
-            if (child.getVisibility() != GONE) {
+            if (child.getVisibility() == VISIBLE) {
                 final int width = child.getMeasuredWidth();
                 final int height = child.getMeasuredHeight();
                 int dy = 0;
                 if (i < count - 1) {
-                    if (!expand) {
-                        //todo 未展开情况
-                        dy = (int) ((count - i - 1) * blindsSize * animatedFraction);
+                    if (fold) {
+                        dy = (int) ((count - i - 1) * fraction * width * animatedFraction);
                     } else {
                         for (int j = i + 1; j <= count - 1; j++) {
                             int measuredWidth = getChildAt(j).getMeasuredWidth();
