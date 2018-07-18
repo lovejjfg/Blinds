@@ -4,24 +4,43 @@ import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.annotation.IntDef;
 import android.support.v4.view.animation.FastOutLinearInInterpolator;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.PARAMETER;
 
 /**
  * Created by joe on 2018/7/16.
  * Email: lovejjfg@gmail.com
  */
+@SuppressWarnings("unused")
 public class BlindsLayout extends ViewGroup {
 
+    @IntDef(flag = true, value = {
+        LEFT,
+        RIGHT
+    })
+    @Target(PARAMETER)
+    @Retention(RetentionPolicy.SOURCE)
+    @interface Orientation {
+    }
+
+    public static final int LEFT = 0;
+    public static final int RIGHT = 1;
     private int maxCount = 3;
-    private float fraction = 0.6F;
+    private float fraction = 0.8F;
     private ValueAnimator layoutChangeAnimator;
     private boolean fold = true;
     private int extraSpace = 0;
     private float animatedFraction = 1.0f;
     private static final int ANIMATION_DURATION = 300;
+    private int orientation = LEFT;
 
     public BlindsLayout(Context context) {
         this(context, null);
@@ -35,10 +54,11 @@ public class BlindsLayout extends ViewGroup {
         super(context, attrs, defStyleAttr);
         setChildrenDrawingOrderEnabled(true);
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.BlindsLayout);
-        fraction = a.getFraction(R.styleable.BlindsLayout_blindsFraction, 1, 1, fraction);
+        fraction = 1 - a.getFraction(R.styleable.BlindsLayout_blindsFraction, 1, 1, fraction);
         extraSpace = a.getDimensionPixelSize(R.styleable.BlindsLayout_blindsExtraSpace, extraSpace);
         maxCount = a.getInt(R.styleable.BlindsLayout_blindsMaxCount, maxCount);
         fold = a.getBoolean(R.styleable.BlindsLayout_blindsFold, fold);
+        orientation = a.getInt(R.styleable.BlindsLayout_blindsFoldOrientation, LEFT);
         a.recycle();
 
         layoutChangeAnimator = ValueAnimator
@@ -101,6 +121,13 @@ public class BlindsLayout extends ViewGroup {
         }
     }
 
+    public void setOrientation(@Orientation int orientation) {
+        if (this.orientation != orientation) {
+            this.orientation = orientation;
+            requestLayout();
+        }
+    }
+
     @Override
     public final void addView(View child, int index, LayoutParams params) {
         if (getChildCount() >= maxCount) {
@@ -151,12 +178,17 @@ public class BlindsLayout extends ViewGroup {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        layoutChildren(l, r);
+        if (orientation == RIGHT) {
+            layoutChildren(l, r);
+        } else {
+            layoutChildrenNormal(l, r);
+        }
     }
 
     void layoutChildren(int left, int right) {
         final int count = getChildCount();
         final int parentRight = right - left - getPaddingRight();
+        int parentLeft = getPaddingLeft();
         final int parentTop = getPaddingTop();
         for (int i = count - 1; i >= 0; i--) {
             final View child = getChildAt(i);
@@ -174,9 +206,45 @@ public class BlindsLayout extends ViewGroup {
                         }
                         dy *= animatedFraction;
                     }
-                    dy += (count - i - 1) * extraSpace;
+                    if (extraSpace < 0 && -i * extraSpace > dy) {
+                        dy = 0;
+                    } else {
+                        dy += (count - i - 1) * extraSpace;
+                    }
                 }
                 child.layout(parentRight - width - dy, parentTop, parentRight - dy, parentTop + height);
+            }
+        }
+    }
+
+    void layoutChildrenNormal(int left, int right) {
+        final int count = getChildCount();
+        final int parentRight = getPaddingLeft();
+        int parentLeft = getPaddingLeft();
+        final int parentTop = getPaddingTop();
+        for (int i = 0; i < count; i++) {
+            final View child = getChildAt(i);
+            if (child.getVisibility() == VISIBLE) {
+                final int width = child.getMeasuredWidth();
+                final int height = child.getMeasuredHeight();
+                int dy = 0;
+                if (i > 0) {
+                    if (fold) {
+                        dy = (int) (i * fraction * width * animatedFraction);
+                    } else {
+                        for (int j = 0; j <= i - 1; j++) {
+                            int measuredWidth = getChildAt(j).getMeasuredWidth();
+                            dy += measuredWidth;
+                        }
+                        dy *= animatedFraction;
+                    }
+                    if (extraSpace < 0 && -i * extraSpace > dy) {
+                        dy = 0;
+                    } else {
+                        dy += i * extraSpace;
+                    }
+                }
+                child.layout(parentLeft + dy, parentTop, parentLeft + dy + width, parentTop + height);
             }
         }
     }

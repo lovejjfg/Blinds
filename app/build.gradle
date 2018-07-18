@@ -5,13 +5,14 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion COMPILE_SDK_VERSION as int
+    buildToolsVersion BUILD_TOOLS_VERSION as String
     defaultConfig {
-        applicationId "com.lovejjfg.blinds.demo"
-        minSdkVersion 17
-        targetSdkVersion 27
-        versionCode 1
-        versionName "1.0"
+        applicationId APP_ID
+        minSdkVersion MIN_SDK_VERSION
+        targetSdkVersion TARGET_SDK_VERSION
+        versionCode project.gitCommitCount
+        versionName project.gitTag
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

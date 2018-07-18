@@ -5,5 +5,9 @@
         <attr format="integer" name="blindsMaxCount"/>
         <attr format="fraction" name="blindsFraction"/>
         <attr format="boolean" name="blindsFold"/>
+        <attr format="enum" name="blindsFoldOrientation">
+            <enum name="left" value="0"/>
+            <enum name="right" value="1"/>
+        </attr>
     </declare-styleable>
 </resources>
