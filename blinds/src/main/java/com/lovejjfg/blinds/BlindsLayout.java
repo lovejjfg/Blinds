@@ -13,6 +13,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.PARAMETER;
 
 /**
@@ -26,7 +27,7 @@ public class BlindsLayout extends ViewGroup {
         LEFT,
         RIGHT
     })
-    @Target(PARAMETER)
+    @Target({ PARAMETER, METHOD })
     @Retention(RetentionPolicy.SOURCE)
     @interface Orientation {
     }
@@ -126,6 +127,26 @@ public class BlindsLayout extends ViewGroup {
             this.orientation = orientation;
             requestLayout();
         }
+    }
+
+    public int getMaxCount() {
+        return maxCount;
+    }
+
+    public float getFraction() {
+        return fraction;
+    }
+
+    public boolean isFold() {
+        return fold;
+    }
+
+    public int getExtraSpace() {
+        return extraSpace;
+    }
+
+    public @Orientation int getOrientation() {
+        return orientation;
     }
 
     @Override

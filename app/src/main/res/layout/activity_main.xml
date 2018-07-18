@@ -6,7 +6,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_gravity="center_vertical"
     android:orientation="vertical"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
     >
 
     <com.lovejjfg.blinds.BlindsLayout
@@ -75,7 +78,7 @@
         android:id="@+id/blinds5"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:blindsExtraSpace="-70dp"
+        app:blindsExtraSpace="-10dp"
         app:blindsFraction="20%"
         app:blindsMaxCount="3"
         tools:context="com.lovejjfg.demo.MainActivity">

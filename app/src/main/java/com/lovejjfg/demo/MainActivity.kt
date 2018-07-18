@@ -22,10 +22,15 @@ class MainActivity : AppCompatActivity() {
         blinds.setOnClickListener {
             blinds.toggle()
             blind3.toggle()
+            if (blinds4.orientation == LEFT) {
+                blinds4.orientation = RIGHT
+            } else {
+                blinds4.orientation = LEFT
+            }
         }
-        blinds4.setOrientation(RIGHT)
-        blinds5.setOrientation(RIGHT)
-        blind3.setOrientation(RIGHT)
+        blinds4.orientation = RIGHT
+        blinds5.orientation = RIGHT
+        blind3.orientation = RIGHT
         for (i in 0..6) {
             val imageView = ImageView(this)
             imageView.layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
