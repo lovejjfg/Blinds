@@ -18,6 +18,7 @@
         android:id="@+id/blinds"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:blindsFold="false"
         app:blindsFraction="60%"
         app:blindsMaxCount="4"
         tools:context="com.lovejjfg.demo.MainActivity">

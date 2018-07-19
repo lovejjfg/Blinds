@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         blinds4.orientation = RIGHT
         blinds5.orientation = RIGHT
         blind3.orientation = RIGHT
-        for (i in 0..6) {
+        for (i in 0..2) {
             val imageView = ImageView(this)
             imageView.layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
             imageView.setImageResource(R.mipmap.ic_launcher)
