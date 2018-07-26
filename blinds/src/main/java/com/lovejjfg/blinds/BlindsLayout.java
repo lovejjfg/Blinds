@@ -32,6 +32,7 @@ public class BlindsLayout extends ViewGroup {
     @interface Orientation {
     }
 
+    private static final FastOutLinearInInterpolator INTERPOLATOR = new FastOutLinearInInterpolator();
     public static final int LEFT = 0;
     public static final int RIGHT = 1;
     private int maxCount = 3;
@@ -42,6 +43,7 @@ public class BlindsLayout extends ViewGroup {
     private float animatedFraction = 1.0f;
     private static final int ANIMATION_DURATION = 300;
     private int orientation = LEFT;
+    private boolean revertDraw = true;
 
     public BlindsLayout(Context context) {
         this(context, null);
@@ -53,19 +55,19 @@ public class BlindsLayout extends ViewGroup {
 
     public BlindsLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        setChildrenDrawingOrderEnabled(true);
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.BlindsLayout);
-        fraction = 1 - a.getFraction(R.styleable.BlindsLayout_blindsFraction, 1, 1, fraction);
+        fraction = a.getFraction(R.styleable.BlindsLayout_blindsFraction, 1, 1, fraction);
         extraSpace = a.getDimensionPixelSize(R.styleable.BlindsLayout_blindsExtraSpace, extraSpace);
         maxCount = a.getInt(R.styleable.BlindsLayout_blindsMaxCount, maxCount);
         fold = a.getBoolean(R.styleable.BlindsLayout_blindsFold, fold);
         orientation = a.getInt(R.styleable.BlindsLayout_blindsFoldOrientation, LEFT);
+        revertDraw = a.getBoolean(R.styleable.BlindsLayout_blindsRevertDraw, revertDraw);
         a.recycle();
-
+        setChildrenDrawingOrderEnabled(revertDraw);
         layoutChangeAnimator = ValueAnimator
             .ofFloat(0f, 1.0f)
             .setDuration(ANIMATION_DURATION);
-        layoutChangeAnimator.setInterpolator(new FastOutLinearInInterpolator());
+        layoutChangeAnimator.setInterpolator(INTERPOLATOR);
         layoutChangeAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
 
             @Override
@@ -89,7 +91,13 @@ public class BlindsLayout extends ViewGroup {
         }
     }
 
+    /**
+     * fold fraction 1.0 means fold 100% 0 means not fold.
+     */
     public void setFraction(float fraction) {
+        if (fraction < 0 || fraction > 1F) {
+            throw new IllegalArgumentException("fraction must in [0,1] ,but you set :" + fraction);
+        }
         if (this.fraction != fraction) {
             this.fraction = fraction;
             requestLayout();
@@ -129,6 +137,18 @@ public class BlindsLayout extends ViewGroup {
         }
     }
 
+    public boolean isRevertDraw() {
+        return revertDraw;
+    }
+
+    public void setRevertDraw(boolean revertDraw) {
+        if (this.revertDraw != revertDraw) {
+            this.revertDraw = revertDraw;
+            setChildrenDrawingOrderEnabled(revertDraw);
+            requestLayout();
+        }
+    }
+
     public int getMaxCount() {
         return maxCount;
     }
@@ -145,7 +165,8 @@ public class BlindsLayout extends ViewGroup {
         return extraSpace;
     }
 
-    public @Orientation int getOrientation() {
+    public @Orientation
+    int getOrientation() {
         return orientation;
     }
 
@@ -200,13 +221,13 @@ public class BlindsLayout extends ViewGroup {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         if (orientation == RIGHT) {
-            layoutChildren(l, r);
+            layoutChildrenRight(l, r);
         } else {
-            layoutChildrenNormal(l, r);
+            layoutChildrenLeft(l, r);
         }
     }
 
-    void layoutChildren(int left, int right) {
+    void layoutChildrenRight(int left, int right) {
         final int count = getChildCount();
         final int parentRight = right - left - getPaddingRight();
         int parentLeft = getPaddingLeft();
@@ -216,29 +237,29 @@ public class BlindsLayout extends ViewGroup {
             if (child.getVisibility() == VISIBLE) {
                 final int width = child.getMeasuredWidth();
                 final int height = child.getMeasuredHeight();
-                int dy = 0;
+                int offset = 0;
                 if (i < count - 1) {
                     if (fold) {
-                        dy = (int) ((count - i - 1) * fraction * width * animatedFraction);
+                        offset = (int) ((count - i - 1) * (1 - fraction) * width * animatedFraction);
                     } else {
                         for (int j = i + 1; j <= count - 1; j++) {
                             int measuredWidth = getChildAt(j).getMeasuredWidth();
-                            dy += measuredWidth;
+                            offset += measuredWidth;
                         }
-                        dy *= animatedFraction;
+                        offset *= animatedFraction;
                     }
-                    if (extraSpace < 0 && -i * extraSpace > dy) {
-                        dy = 0;
+                    if (extraSpace < 0 && -i * extraSpace > offset) {
+                        offset = 0;
                     } else {
-                        dy += (count - i - 1) * extraSpace;
+                        offset += (count - i - 1) * extraSpace;
                     }
                 }
-                child.layout(parentRight - width - dy, parentTop, parentRight - dy, parentTop + height);
+                child.layout(parentRight - width - offset, parentTop, parentRight - offset, parentTop + height);
             }
         }
     }
 
-    void layoutChildrenNormal(int left, int right) {
+    void layoutChildrenLeft(int left, int right) {
         final int count = getChildCount();
         final int parentRight = getPaddingLeft();
         int parentLeft = getPaddingLeft();
@@ -248,24 +269,24 @@ public class BlindsLayout extends ViewGroup {
             if (child.getVisibility() == VISIBLE) {
                 final int width = child.getMeasuredWidth();
                 final int height = child.getMeasuredHeight();
-                int dy = 0;
+                int offset = 0;
                 if (i > 0) {
                     if (fold) {
-                        dy = (int) (i * fraction * width * animatedFraction);
+                        offset = (int) (i * (1 - fraction) * width * animatedFraction);
                     } else {
                         for (int j = 0; j <= i - 1; j++) {
                             int measuredWidth = getChildAt(j).getMeasuredWidth();
-                            dy += measuredWidth;
+                            offset += measuredWidth;
                         }
-                        dy *= animatedFraction;
+                        offset *= animatedFraction;
                     }
-                    if (extraSpace < 0 && -i * extraSpace > dy) {
-                        dy = 0;
+                    if (extraSpace < 0 && -i * extraSpace > offset) {
+                        offset = 0;
                     } else {
-                        dy += i * extraSpace;
+                        offset += i * extraSpace;
                     }
                 }
-                child.layout(parentLeft + dy, parentTop, parentLeft + dy + width, parentTop + height);
+                child.layout(parentLeft + offset, parentTop, parentLeft + offset + width, parentTop + height);
             }
         }
     }
