@@ -1,89 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
+<android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center_vertical"
-    android:orientation="vertical"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp"
     >
 
-    <com.lovejjfg.blinds.BlindsLayout
+
+    <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/blinds"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:blindsFold="false"
-        app:blindsFraction="60%"
-        app:blindsMaxCount="4"
-        tools:context="com.lovejjfg.demo.MainActivity">
+        android:layout_gravity="center_vertical"
+        android:orientation="vertical"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        app:layout_behavior="com.lovejjfg.demo.TestBehavier"
+        >
 
-    </com.lovejjfg.blinds.BlindsLayout>
+        <com.lovejjfg.blinds.BlindsLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/blinds"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:blindsFold="true"
+            app:blindsFraction="60%"
+            app:blindsMaxCount="4"
+            app:blindsRevertDraw="true"
+            tools:context="com.lovejjfg.demo.MainActivity">
 
-    <com.lovejjfg.blinds.BlindsLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/blinds1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:blindsFraction="50%"
-        app:blindsMaxCount="5"
-        tools:context="com.lovejjfg.demo.MainActivity">
+        </com.lovejjfg.blinds.BlindsLayout>
 
-    </com.lovejjfg.blinds.BlindsLayout>
+        <com.lovejjfg.blinds.BlindsLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/blinds1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:blindsFraction="50%"
+            app:blindsMaxCount="5"
+            tools:context="com.lovejjfg.demo.MainActivity">
 
-    <com.lovejjfg.blinds.BlindsLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/blinds2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:blindsExtraSpace="-10dp"
-        app:blindsFraction="40%"
-        app:blindsMaxCount="3"
-        tools:context="com.lovejjfg.demo.MainActivity">
-    </com.lovejjfg.blinds.BlindsLayout>
+        </com.lovejjfg.blinds.BlindsLayout>
 
-    <com.lovejjfg.blinds.BlindsLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/blind3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:blindsFraction="60%"
-        app:blindsMaxCount="4"
-        tools:context="com.lovejjfg.demo.MainActivity">
+        <com.lovejjfg.blinds.BlindsLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/blinds2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:blindsExtraSpace="-10dp"
+            app:blindsFraction="40%"
+            app:blindsMaxCount="3"
+            tools:context="com.lovejjfg.demo.MainActivity">
+        </com.lovejjfg.blinds.BlindsLayout>
 
-    </com.lovejjfg.blinds.BlindsLayout>
+        <com.lovejjfg.blinds.BlindsLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/blind3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:blindsFraction="60%"
+            app:blindsMaxCount="4"
+            tools:context="com.lovejjfg.demo.MainActivity">
 
-    <com.lovejjfg.blinds.BlindsLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/blinds4"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:blindsFraction="50%"
-        app:blindsMaxCount="5"
-        tools:context="com.lovejjfg.demo.MainActivity">
+        </com.lovejjfg.blinds.BlindsLayout>
 
-    </com.lovejjfg.blinds.BlindsLayout>
+        <com.lovejjfg.blinds.BlindsLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/blinds4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:blindsFraction="50%"
+            app:blindsMaxCount="5"
+            tools:context="com.lovejjfg.demo.MainActivity">
 
-    <com.lovejjfg.blinds.BlindsLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/blinds5"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:blindsExtraSpace="-10dp"
-        app:blindsFraction="20%"
-        app:blindsMaxCount="3"
-        tools:context="com.lovejjfg.demo.MainActivity">
-    </com.lovejjfg.blinds.BlindsLayout>
+        </com.lovejjfg.blinds.BlindsLayout>
 
-</LinearLayout>
+        <com.lovejjfg.blinds.BlindsLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/blinds5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:blindsExtraSpace="-10dp"
+            app:blindsFraction="20%"
+            app:blindsMaxCount="3"
+            tools:context="com.lovejjfg.demo.MainActivity">
+        </com.lovejjfg.blinds.BlindsLayout>
 
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>
