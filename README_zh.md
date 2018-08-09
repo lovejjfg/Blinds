@@ -41,8 +41,8 @@ code:
 ## 版本
 
 * 0.0.1
-  * support fold fraction and fold orientation
+  * 支持折叠方向以及比例设置
 
 * 0.0.2
-  * add field `isRevertDraw`
+  * 增加属性 `isRevertDraw`
 
