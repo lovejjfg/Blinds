@@ -22,11 +22,6 @@ class MainActivity : AppCompatActivity() {
         blinds.setOnClickListener {
             blinds.toggle()
             blind3.toggle()
-//            if (blinds4.orientation == LEFT) {
-//                blinds4.orientation = RIGHT
-//            } else {
-//                blinds4.orientation = LEFT
-//            }
             if (blinds4.fraction == 0.6F) {
                 blinds4.fraction = 1F
                 blinds4.isRevertDraw = true
@@ -36,9 +31,10 @@ class MainActivity : AppCompatActivity() {
             }
             println("${blinds4.fraction}")
         }
+
+        blinds4.extraSpace = 40
         blinds4.orientation = RIGHT
         blinds4.maxCount = 4
-        blinds4.extraSpace = 20
         blinds4.isRevertDraw = true
         blinds4.setAnimationDuration(1000)
         blinds4.setInterpolator(BounceInterpolator())
@@ -46,35 +42,37 @@ class MainActivity : AppCompatActivity() {
         blind3.orientation = RIGHT
         for (i in 0..2) {
             val imageView = ImageView(this)
-            imageView.layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
-            imageView.setImageResource(R.mipmap.ic_launcher)
+            imageView.layoutParams = LayoutParams(120, 120)
+            imageView.setImageResource(R.mipmap.ic_launcher_round)
             blinds.addView(imageView)
         }
         for (i in 0..6) {
             val imageView = ImageView(this)
-            imageView.layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+            imageView.layoutParams = LayoutParams(120, 120)
             imageView.setImageResource(R.mipmap.ic_launcher)
             blinds1.addView(imageView)
         }
         for (i in 0..6) {
             val imageView = ImageView(this)
-            imageView.setImageResource(R.mipmap.ic_launcher)
+            imageView.layoutParams = LayoutParams(120, 120)
+            imageView.setImageResource(R.mipmap.ic_launcher_round)
             blinds2.addView(imageView)
         }
         for (i in 0..6) {
             val imageView = ImageView(this)
-            imageView.layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+            imageView.layoutParams = LayoutParams(120, 120)
             imageView.setImageResource(R.mipmap.ic_launcher)
             blind3.addView(imageView)
         }
         for (i in 0..6) {
             val imageView = ImageView(this)
-            imageView.layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
-            imageView.setImageResource(R.mipmap.ic_launcher)
+            imageView.layoutParams = LayoutParams(120, 120)
+            imageView.setImageResource(R.mipmap.ic_launcher_round)
             blinds4.addView(imageView)
         }
         for (i in 0..6) {
             val imageView = ImageView(this)
+            imageView.layoutParams = LayoutParams(120, 120)
             imageView.setImageResource(R.mipmap.ic_launcher)
             blinds5.addView(imageView)
         }

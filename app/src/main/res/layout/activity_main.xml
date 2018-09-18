@@ -13,6 +13,7 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/parentView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
@@ -21,6 +22,7 @@
         android:paddingRight="10dp"
         app:layout_behavior="com.lovejjfg.demo.TestBehavier"
         >
+
 
         <com.lovejjfg.blinds.BlindsLayout
             xmlns:android="http://schemas.android.com/apk/res/android"
