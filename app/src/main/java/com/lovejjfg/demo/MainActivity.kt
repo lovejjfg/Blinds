@@ -1,15 +1,9 @@
 package com.lovejjfg.demo
 
 import android.content.Intent
-import android.graphics.PixelFormat
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
-import android.view.WindowManager
 import android.view.animation.BounceInterpolator
 import android.widget.ImageView
 import com.lovejjfg.blinds.BlindsLayout.RIGHT
@@ -22,9 +16,15 @@ import kotlinx.android.synthetic.main.activity_main.blinds4
 import kotlinx.android.synthetic.main.activity_main.blinds5
 
 class MainActivity : AppCompatActivity() {
+    private val floatViewHelper: FloatViewHelper by lazy {
+        FloatViewHelper()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        floatViewHelper.init(application)
+        floatViewHelper.init(application)
+        floatViewHelper.init(application)
         setContentView(R.layout.activity_main)
         blinds.setOnClickListener {
             blinds.toggle()
