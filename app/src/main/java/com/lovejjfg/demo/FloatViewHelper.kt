@@ -27,6 +27,7 @@ class FloatViewHelper {
     private var resumeCount = 0
     private var floatView: View? = null
     private val callback: ActivityLifecycleCallback = ActivityLifecycleCallback()
+    private var fullWindow: Boolean = true
 
     fun init(application: Application) {
         application.unregisterActivityLifecycleCallbacks(callback)
@@ -67,7 +68,7 @@ class FloatViewHelper {
     private fun addFloatView(activity: Activity) {
         if (floatView == null) {
             val layoutParams = createLayoutParams(activity)
-            val statusBarHeight = activity.getStatusBarHeight()
+            val dy = if (!fullWindow) activity.getStatusBarHeight() else 0
             layoutParams.gravity = Gravity.TOP or Gravity.START
             val inflate = LayoutInflater.from(activity).inflate(
                 R.layout.floating_bt, activity.window.decorView as ViewGroup,
@@ -88,7 +89,7 @@ class FloatViewHelper {
                 val rawX = (event.rawX - view.width * .5f)
                 val rawY = (event.rawY - view.height * .5f)
                 layoutParams.x = rawX.toInt()
-                layoutParams.y = rawY.toInt() - statusBarHeight
+                layoutParams.y = rawY.toInt() - dy
                 activity.windowManager.updateViewLayout(inflate, layoutParams)
                 return@setOnTouchListener true
             }
@@ -96,22 +97,25 @@ class FloatViewHelper {
     }
 
     private fun createLayoutParams(activity: Activity): LayoutParams {
+        val flags = if (fullWindow) {
+            WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or LayoutParams.FLAG_NOT_TOUCH_MODAL or LayoutParams.FLAG_NOT_FOCUSABLE
+        } else {
+            LayoutParams.FLAG_NOT_TOUCH_MODAL or LayoutParams.FLAG_NOT_FOCUSABLE
+        }
         return if (VERSION.SDK_INT >= VERSION_CODES.O) {
             LayoutParams(
                 LayoutParams.WRAP_CONTENT,
                 LayoutParams.WRAP_CONTENT,
-                LayoutParams
-                    .TYPE_APPLICATION_OVERLAY,
-                LayoutParams.FLAG_NOT_TOUCH_MODAL or LayoutParams.FLAG_NOT_FOCUSABLE,
+                LayoutParams.TYPE_APPLICATION_OVERLAY,
+                flags,
                 PixelFormat.TRANSPARENT
             )
         } else {
             LayoutParams(
                 LayoutParams.WRAP_CONTENT,
                 LayoutParams.WRAP_CONTENT,
-                LayoutParams
-                    .TYPE_TOAST,
-                LayoutParams.FLAG_NOT_TOUCH_MODAL or LayoutParams.FLAG_NOT_FOCUSABLE,
+                LayoutParams.TYPE_TOAST,
+                flags,
                 PixelFormat.TRANSPARENT
             )
         }.apply {

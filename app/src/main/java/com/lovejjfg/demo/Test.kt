@@ -1,18 +1,11 @@
-package com.lovejjfg.blinds
-
-import org.junit.Test
-
-import org.junit.Assert.*
+package com.lovejjfg.demo
 
 /**
- * Example local unit test, which will execute on the development machine (host).
- *
- * See [testing documentation](http://d.android.com/tools/testing).
+ * Created by joe on 2019/2/18.
+ * Email: lovejjfg@gmail.com
  */
-class ExampleUnitTest {
-    @Test
+class Test {
     fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
         val test = "2"
         var test2 = "xxx"
         test2 = "hahahaha"
@@ -20,10 +13,14 @@ class ExampleUnitTest {
         A.TestInternal()
     }
 
-
     interface B {
-        fun f() { print("B") } // 接口成员默认就是“open”的
-        fun b() { print("b") }
+        fun f() {
+            print("B")
+        } // 接口成员默认就是“open”的
+
+        fun b() {
+            print("b")
+        }
     }
 
     class C() : A(), B {
@@ -36,13 +33,17 @@ class ExampleUnitTest {
 }
 
 open class A {
-    open fun f() { print("A") }
-    fun a() { print("a")
+    open fun f() {
+        print("A")
+    }
+
+    fun a() {
+        print("a")
         TestInternal()
     }
+
     internal class TestInternal {
         fun test() {
-
         }
     }
 }

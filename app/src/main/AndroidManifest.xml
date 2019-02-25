@@ -13,7 +13,7 @@
         <activity
             android:name="com.lovejjfg.demo.SecondActivity"
             android:label="@string/title_activity_second"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar.FullScreen">
         </activity>
         <activity android:name="com.lovejjfg.demo.MainActivity">
             <intent-filter>
